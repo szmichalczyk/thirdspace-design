@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Third Space — Shift Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ede8e0;
+    --sidebar-bg: #e4dfd6;
+    --surface: #f5f1ec;
+    --surface2: #fff;
+    --border: #d8d2c8;
+    --text: #1a1915;
+    --muted: #8c8880;
+    --active-bg: #1a1915;
+    --active-text: #f5f1ec;
+    --accent-red: #dc4c3e;
+    --accent-orange: #e8832a;
+    --accent-green: #3d9a5c;
+    --accent-blue: #3b7dd8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist', -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: var(--sidebar-bg);
+    padding: 28px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .brand { padding: 0 8px; }
+  .brand-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .brand-sub {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .nav-group { display: flex; flex-direction: column; gap: 2px; }
+  .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.1s, color 0.1s;
+  }
+  .nav-item:hover { background: rgba(0,0,0,0.05); color: var(--text); }
+  .nav-item.active {
+    background: var(--active-bg);
+    color: var(--active-text);
+    font-weight: 500;
+  }
+  .nav-item .icon { width: 16px; opacity: 0.6; font-style: normal; }
+  .nav-item.active .icon { opacity: 1; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 100px;
+    line-height: 1.6;
+  }
+  .nav-item.active .nav-badge {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px 0;
+  }
+
+  .page-title {
+    font-family: 'Caveat', cursive;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .try-it {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .try-badge {
+    background: var(--active-bg);
+    color: var(--active-text);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .try-email {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 32px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-btn {
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-btn.active {
+    background: var(--active-bg);
+    color: var(--active-text);
+  }
+  .filter-count {
+    background: var(--accent-red);
+    color: #fff;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .filter-btn.active .filter-count { background: rgba(255,255,255,0.2); }
+
+  .spacer { flex: 1; }
+
+  .view-toggle {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 8px;
+  }
+  .view-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Geist', sans-serif;
+    transition: all 0.15s;
+  }
+  .view-btn.active { background: var(--active-bg); color: var(--active-text); }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Geist', sans-serif;
+    width: 200px;
+  }
+
+  /* ── CALENDAR ── */
+  .calendar-wrap {
+    flex: 1;
+    padding: 24px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .cal-nav-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--muted);
+  }
+  .cal-month {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .cal-today-btn {
+    margin-left: auto;
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .cal-dow {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .cal-cell {
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 10px 8px;
+    min-height: 120px;
+    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: background 0.1s;
+  }
+  .cal-cell:hover { background: #fdfcfa; }
+  .cal-cell.empty { background: var(--surface); opacity: 0.5; }
+  .cal-cell.today .day-num {
+    background: var(--active-bg);
+    color: var(--active-text);
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .day-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 4px;
+    line-height: 1;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-cell.has-events .day-num { color: var(--text); }
+
+  .event {
+    background: var(--bg);
+    border-radius: 5px;
+    padding: 5px 7px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    cursor: pointer;
+    border-left: 2px solid var(--border);
+    transition: filter 0.1s;
+  }
+  .event:hover { filter: brightness(0.97); }
+  .event.has-incident { border-left-color: var(--accent-red); }
+  .event.has-warning  { border-left-color: var(--accent-orange); }
+  .event.has-action   { border-left-color: var(--accent-green); }
+  .event.neutral      { border-left-color: #bbb; }
+
+  .event-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .event-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 3px;
+  }
+  .tag {
+    font-size: 9px;
+    font-weight: 500;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .tag.red    { background: #fde8e6; color: var(--accent-red); }
+  .tag.orange { background: #fef0e0; color: var(--accent-orange); }
+  .tag.blue   { background: #e4eefb; color: var(--accent-blue); }
+  .tag.green  { background: #e3f4ea; color: var(--accent-green); }
+  .tag.gray   { background: #ede8e0; color: var(--muted); }
+
+  .event-meta {
+    display: flex;
+    gap: 5px;
+    margin-top: 2px;
+    align-items: center;
+  }
+  .meta-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .meta-dot.red   { background: var(--accent-red); }
+  .meta-dot.green { background: var(--accent-green); }
+  .meta-dot.gray  { background: #bbb; }
+  .meta-count {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .more-events {
+    font-size: 10px;
+    color: var(--muted);
+    padding: 2px 4px;
+    cursor: pointer;
+    font-family: 'Geist Mono', monospace;
+  }
+  .more-events:hover { color: var(--text); }
+
+  .sidebar-nav {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sidebar-nav a {
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.02em;
+    transition: all 0.15s;
+  }
+  .sidebar-nav a:hover { background: rgba(0,0,0,0.05); color: var(--text); }
+  .sidebar-nav a.active { background: var(--active-bg); color: var(--active-text); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-name">Third Space</div>
+    <div class="brand-sub">Risk Management</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Overview</div>
+    <a class="nav-item" href="#"><i class="icon">⊞</i> Dashboard</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Operations</div>
+    <a class="nav-item active" href="#"><i class="icon">☰</i> Shift Reports <span class="nav-badge">10</span></a>
+    <a class="nav-item" href="#"><i class="icon">△</i> Incidents <span class="nav-badge">4</span></a>
+    <a class="nav-item" href="#"><i class="icon">👤</i> Staff</a>
+    <a class="nav-item" href="#"><i class="icon">🔧</i> Maintenance</a>
+    <a class="nav-item" href="#"><i class="icon">✓</i> TODOs</a>
+    <a class="nav-item" href="#"><i class="icon">📄</i> Documents</a>
+    <a class="nav-item" href="#"><i class="icon">📷</i> Cameras</a>
+    <a class="nav-item" href="#"><i class="icon">⚡</i> Integrations</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Insurance</div>
+
+    <a class="nav-item" href="#"><i class="icon">📋</i> Policies</a>
+    <a class="nav-item" href="#"><i class="icon">📄</i> COI Manager</a>
+    <a class="nav-item" href="#"><i class="icon">✦</i> AI Advisor</a>
+  </div>
+
+  <div class="sidebar-nav">
+    <a href="thirdspace-shift-reports-calendar.html" class="active">Shift Reports</a>
+    <a href="thirdspace-call-prep.html">Call Prep</a>
+    <a href="thirdspace-service-flow.html">Service Flow</a>
+    <a href="thirdspace-mobile-wireframes.html">Wireframes</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="topbar">
+    <h1 class="page-title">Shift Reports</h1>
+    <div class="try-it">
+      <span class="try-badge">TRY IT</span>
+      Send your shift report to <span class="try-email">reports@thirdspacerisk.com</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Action Items <span class="filter-count">16</span></button>
+    <div class="spacer"></div>
+    <div class="view-toggle">
+      <button class="view-btn">List</button>
+      <button class="view-btn active">Calendar</button>
+    </div>
+    <div class="search">🔍 Search reports...</div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="calendar-wrap">
+
+    <div class="cal-nav">
+      <button class="cal-nav-btn">‹</button>
+      <span class="cal-month">February 2025</span>
+      <button class="cal-nav-btn">›</button>
+      <button class="cal-today-btn">Today</button>
+    </div>
+
+    <div class="cal-grid">
+
+      <!-- Day of week headers -->
+      <div class="cal-dow">Sun</div>
+      <div class="cal-dow">Mon</div>
+      <div class="cal-dow">Tue</div>
+      <div class="cal-dow">Wed</div>
+      <div class="cal-dow">Thu</div>
+      <div class="cal-dow">Fri</div>
+      <div class="cal-dow">Sat</div>
+
+      <!-- Week 1: Feb starts on Saturday -->
+      <div class="cal-cell empty"><div class="day-num">26</div></div>
+      <div class="cal-cell empty"><div class="day-num">27</div></div>
+      <div class="cal-cell empty"><div class="day-num">28</div></div>
+      <div class="cal-cell empty"><div class="day-num">29</div></div>
+      <div class="cal-cell empty"><div class="day-num">30</div></div>
+      <div class="cal-cell empty"><div class="day-num">31</div></div>
+      <div class="cal-cell">
+        <div class="day-num">1</div>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="cal-cell">
+        <div class="day-num">2</div>
+      </div>
+      <!-- Feb 3 — 3 events -->
+      <div class="cal-cell has-events">
+        <div class="day-num">3</div>
+        <div class="event has-incident">
+          <div class="event-name">Peggy Gou Late Night</div>
+          <div class="event-meta">
+            <span class="meta-dot red"></span><span class="meta-count">1 incident</span>
+            <span class="meta-dot green"></span><span class="meta-count">2</span>
+          </div>
+          <div class="event-tags"><span class="tag red">⚠ Noise Complaint</span></div>
+        </div>
+        <div class="event has-action">
+          <div class="event-name">Kaytranada Residency</div>
+          <div class="event-meta">
+            <span class="meta-dot green"></span><span class="meta-count">2 resolved</span>
+          </div>
+        </div>
+        <div class="event neutral">
+          <div class="event-name">Anderson .Paak &amp; The Free Nationals</div>
+        </div>
+      </div>
+      <!-- Feb 4 — 2 events -->
+      <div class="cal-cell has-events">
+        <div class="day-num">4</div>
+        <div class="event has-action">
+          <div class="event-name">Toro y Moi DJ Set</div>
+          <div class="event-meta">
+            <span class="meta-dot green"></span><span class="meta-count">1 resolved</span>
+          </div>
+          <div class="event-tags">
+            <span class="tag orange">⊙ Incident #247</span>
+            <span class="tag blue">Staffing</span>
+          </div>
+        </div>
+        <div class="event has-action">
+          <div class="event-name">Deep Clean &amp; Equipment Check</div>
+          <div class="event-meta">
+            <span class="meta-dot gray"></span><span class="meta-count">4 items</span>
+            <span class="meta-dot green"></span><span class="meta-count">10</span>
+          </div>
+          <div class="event-tags"><span class="tag blue">Equipment</span></div>
+        </div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">5</div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">6</div>
+      </div>
+      <!-- Feb 7 — 1 event -->
+      <div class="cal-cell has-events">
+        <div class="day-num">7</div>
+        <div class="event has-incident">
+          <div class="event-name">Soulection Showcase</div>
+          <div class="event-meta">
+            <span class="meta-dot red"></span><span class="meta-count">1</span>
+            <span class="meta-dot green"></span><span class="meta-count">1</span>
+          </div>
+          <div class="event-tags"><span class="tag orange">⚠ Health &amp; Safety</span></div>
+        </div>
+      </div>
+      <!-- Feb 8 — 3 events -->
+      <div class="cal-cell has-events">
+        <div class="day-num">8</div>
+        <div class="event has-incident">
+          <div class="event-name">Freddie Mercury Night</div>
+          <div class="event-meta">
+            <span class="meta-dot red"></span><span class="meta-count">2</span>
+            <span class="meta-dot gray"></span><span class="meta-count">1</span>
+          </div>
+          <div class="event-tags">
+            <span class="tag red">⚠ Noise Complaint</span>
+            <span class="tag blue">Equipment</span>
+          </div>
+        </div>
+        <div class="event neutral">
+          <div class="event-name">DJ Koze</div>
+        </div>
+        <div class="event neutral">
+          <div class="event-name">Khruangbin Afterparty</div>
+        </div>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="cal-cell">
+        <div class="day-num">9</div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">10</div>
+      </div>
+      <!-- Feb 11 — 1 event -->
+      <div class="cal-cell has-events today">
+        <div class="day-num">11</div>
+        <div class="event neutral">
+          <div class="event-name">Norah Jones Trio</div>
+          <div class="event-meta">
+            <span class="meta-dot gray"></span><span class="meta-count">3 photos</span>
+          </div>
+        </div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">12</div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">13</div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">14</div>
+      </div>
+      <div class="cal-cell">
+        <div class="day-num">15</div>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="cal-cell"><div class="day-num">16</div></div>
+      <div class="cal-cell"><div class="day-num">17</div></div>
+      <div class="cal-cell"><div class="day-num">18</div></div>
+      <div class="cal-cell"><div class="day-num">19</div></div>
+      <div class="cal-cell"><div class="day-num">20</div></div>
+      <div class="cal-cell"><div class="day-num">21</div></div>
+      <div class="cal-cell"><div class="day-num">22</div></div>
+
+      <!-- Week 5 -->
+      <div class="cal-cell"><div class="day-num">23</div></div>
+      <div class="cal-cell"><div class="day-num">24</div></div>
+      <div class="cal-cell"><div class="day-num">25</div></div>
+      <div class="cal-cell"><div class="day-num">26</div></div>
+      <div class="cal-cell"><div class="day-num">27</div></div>
+      <div class="cal-cell"><div class="day-num">28</div></div>
+      <div class="cal-cell empty"><div class="day-num">1</div></div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

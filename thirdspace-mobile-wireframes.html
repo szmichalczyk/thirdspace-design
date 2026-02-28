@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Third Space — Mobile Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #fff;
+    --border: #e5e2dc;
+    --text: #1a1915;
+    --muted: #8c8880;
+    --accent: #1a1915;
+    --accent-blue: #3b7dd8;
+    --accent-red: #dc4c3e;
+    --accent-orange: #e8832a;
+    --accent-green: #3d9a5c;
+    --phone-bg: #f9f9f7;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 48px 40px;
+  }
+
+  .page-nav {
+    position: fixed;
+    top: 20px;
+    right: 32px;
+    display: flex;
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 100;
+  }
+  .page-nav a {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    text-decoration: none;
+    transition: all 0.15s;
+    font-family: 'Geist Mono', monospace;
+  }
+  .page-nav a:hover { color: #111; background: #eee; }
+  .page-nav a.active { background: #111; color: #fff; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  .header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .subtitle {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ── PHONE FRAMES ── */
+  .screens-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    padding-bottom: 24px;
+  }
+
+  .screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .screen-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+  .screen-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    margin-top: -4px;
+  }
+
+  .phone {
+    width: 375px;
+    min-height: 680px;
+    background: var(--surface);
+    border-radius: 40px;
+    border: 8px solid #1a1915;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  }
+
+  .phone-statusbar {
+    height: 50px;
+    background: var(--surface);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+    position: relative;
+  }
+  .phone-notch {
+    width: 120px;
+    height: 28px;
+    background: #1a1915;
+    border-radius: 0 0 16px 16px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .phone-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .phone-content {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 620px;
+  }
+
+  /* ── SHARED COMPONENTS ── */
+  .wiz-header {
+    padding: 16px 20px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+  .wiz-brand {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .wiz-progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .wiz-progress-bar {
+    flex: 1;
+    height: 3px;
+    background: #e5e5e5;
+    border-radius: 2px;
+  }
+  .wiz-progress-bar.filled {
+    background: var(--accent);
+  }
+  .wiz-progress-bar.current {
+    background: var(--accent-blue);
+  }
+  .wiz-step-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .wiz-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .wiz-question {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .wiz-explanation {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    background: #faf9f6;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent-blue);
+  }
+
+  .wiz-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-family: 'Geist', sans-serif;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-secondary {
+    background: #f0ede8;
+    color: var(--muted);
+  }
+  .btn-small {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 8px;
+    flex: none;
+  }
+
+  /* ── TYPE CARDS ── */
+  .type-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .type-card {
+    background: #faf9f6;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .type-card:hover { border-color: var(--accent); }
+  .type-card.selected {
+    border-color: var(--accent);
+    background: #f5f3ee;
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .type-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .type-icon.fall { background: #fef0e0; }
+  .type-icon.assault { background: #fee2e2; }
+  .type-icon.liquor { background: #fef3c7; }
+  .type-icon.harassment { background: #ede9fe; }
+  .type-icon.property { background: #dbeafe; }
+  .type-info { flex: 1; }
+  .type-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .type-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .type-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .type-card.selected .type-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── FORM FIELDS ── */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .field-input {
+    background: #faf9f6;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'Geist', sans-serif;
+  }
+  .field-input.filled {
+    border-color: var(--accent-green);
+    background: #f0faf4;
+  }
+  .field-input::placeholder {
+    color: #c4c0ba;
+  }
+  .field-textarea {
+    min-height: 100px;
+    resize: none;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ── UPLOAD AREA ── */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: #faf9f6;
+  }
+  .upload-icon {
+    font-size: 28px;
+    opacity: 0.6;
+  }
+  .upload-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .upload-hint {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .upload-btn {
+    margin-top: 4px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    font-family: 'Geist', sans-serif;
+  }
+
+  .uploaded-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f0faf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+  }
+  .uploaded-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .uploaded-info { flex: 1; }
+  .uploaded-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .uploaded-size {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .uploaded-check {
+    color: var(--accent-green);
+    font-size: 16px;
+  }
+
+  /* ── WITNESS CARD ── */
+  .witness-card {
+    background: #faf9f6;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .witness-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .witness-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .witness-status {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Geist Mono', monospace;
+  }
+  .witness-status.pending { background: #fef0e0; color: #b45309; }
+  .witness-status.done { background: #dcfce7; color: #15803d; }
+  .witness-detail {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #faf9f6;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .checklist-item.done {
+    background: #f0faf4;
+    border-color: #bbf7d0;
+  }
+  .checklist-item.missing {
+    background: #fef8f7;
+    border-color: #fecaca;
+  }
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .check-icon.done {
+    background: var(--accent-green);
+    color: #fff;
+  }
+  .check-icon.pending {
+    border: 2px solid var(--border);
+    background: #fff;
+  }
+  .check-icon.missing {
+    background: var(--accent-red);
+    color: #fff;
+  }
+  .checklist-label {
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+  }
+  .checklist-item.done .checklist-label {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+
+  /* ── SECTION DIVIDERS ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 24px;
+  }
+  .section-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-divider-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg);
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── ANNOTATIONS ── */
+  .annotation {
+    position: relative;
+    margin-top: 8px;
+  }
+  .annotation-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #92400e;
+    line-height: 1.5;
+  }
+  .annotation-box strong {
+    font-weight: 600;
+    color: #78350f;
+  }
+
+  /* ── SCORE RING ── */
+  .score-ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  .score-ring.good {
+    background: conic-gradient(var(--accent-green) 0% 75%, #e5e5e5 75% 100%);
+  }
+  .score-ring.medium {
+    background: conic-gradient(var(--accent-orange) 0% 45%, #e5e5e5 45% 100%);
+  }
+  .score-inner {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .score-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .score-label {
+    font-size: 8px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ADMIN VIEW ── */
+  .admin-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 16px 20px;
+  }
+  .admin-brand {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .admin-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .admin-meta {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .admin-card {
+    margin: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .admin-card-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #faf9f6;
+  }
+  .admin-card-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Geist Mono', monospace;
+  }
+  .status-badge.open { background: #fef0e0; color: #b45309; }
+  .status-badge.complete { background: #dcfce7; color: #15803d; }
+  .status-badge.review { background: #dbeafe; color: #1d4ed8; }
+
+  .admin-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #faf9f6;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .admin-action-icon {
+    font-size: 16px;
+  }
+
+  .footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  .footer-note {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 32px 12px; }
+    .title { font-size: 28px; }
+    .phone { width: 340px; }
+    .screens-row { gap: 20px; }
+  }
+
+  /* ── INTERACTIVE CANVAS ── */
+  body.canvas-mode {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+  }
+  body.canvas-mode .container { display: none; }
+
+  #canvas-viewport {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    cursor: grab;
+    background-color: #edecea;
+    background-image: radial-gradient(circle, #d5d3cf 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 1;
+  }
+  #canvas-viewport.panning { cursor: grabbing; }
+
+  #canvas-world {
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  .canvas-node {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    contain: layout style;
+    border-radius: 12px;
+    transition: filter 0.15s;
+  }
+  .canvas-node:hover { z-index: 10; }
+  .canvas-node.dragging {
+    cursor: grabbing;
+    z-index: 1000;
+    filter: drop-shadow(0 12px 40px rgba(0,0,0,0.18));
+  }
+  body.locked .canvas-node { cursor: default; }
+  #lock-toggle.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .canvas-node .screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .canvas-node .annotation {
+    max-width: 391px;
+  }
+
+  #canvas-controls {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    z-index: 200;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+  }
+  #canvas-controls button {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Geist Mono', monospace;
+    color: var(--text);
+    transition: background 0.1s;
+  }
+  #canvas-controls button:hover { background: #f5f4f0; }
+  #zoom-level {
+    min-width: 44px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .controls-sep {
+    width: 1px; height: 20px;
+    background: var(--border);
+    margin: 0 6px;
+  }
+
+  #canvas-title {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    z-index: 200;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  #canvas-title .label { margin-bottom: 4px; }
+  #canvas-title .ct-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+</style>
+</head>
+<body>
+
+<nav class="page-nav">
+  <a href="thirdspace-service-flow.html">Service Flow</a>
+  <a href="thirdspace-mobile-wireframes.html" class="active">Wireframes</a>
+</nav>
+
+<div id="canvas-title">
+  <div class="label">Wireframes — Interactive Canvas</div>
+  <div class="ct-title">Magic Link Wizard</div>
+</div>
+
+<div id="canvas-controls">
+  <button id="zoom-in" title="Zoom in">+</button>
+  <span id="zoom-level">100%</span>
+  <button id="zoom-out" title="Zoom out">&minus;</button>
+  <div class="controls-sep"></div>
+  <button id="zoom-fit" title="Fit all screens" style="width:auto;padding:0 10px;font-size:11px;">Fit</button>
+  <button id="zoom-reset" title="Reset to 100%" style="width:auto;padding:0 10px;font-size:11px;">1:1</button>
+  <div class="controls-sep"></div>
+  <button id="lock-toggle" title="Lock / unlock elements" style="width:auto;padding:0 10px;font-size:13px;">&#128274;</button>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="label">Wireframes — Mobile Incident Reporting</div>
+    <h1 class="title">Magic Link Wizard</h1>
+    <p class="subtitle">Staff-facing mobile experience: from opening the magic link to submitting a complete incident report</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- ROW 1: WIZARD FLOW — SCREENS 1-4                -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Staff Wizard — Core Flow</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- ──────── SCREEN 1: LANDING / TYPE SELECTION ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 01</div>
+      <div class="screen-title">Incident Type</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">1:48 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; The Velvet Room</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar current"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+            </div>
+            <div class="wiz-step-label">Step 1 of 5 &middot; Incident Type</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">What happened?</div>
+            <div class="wiz-explanation">
+              Select the type of incident. This determines what information we'll need to collect. Every detail helps build a stronger defense.
+            </div>
+            <div class="type-grid">
+              <div class="type-card selected">
+                <div class="type-icon fall">&#9888;</div>
+                <div class="type-info">
+                  <div class="type-name">Slip & Fall</div>
+                  <div class="type-desc">Inside or outside the premises</div>
+                </div>
+                <div class="type-check">&#10003;</div>
+              </div>
+              <div class="type-card">
+                <div class="type-icon assault">&#9876;</div>
+                <div class="type-info">
+                  <div class="type-name">Assault / Battery</div>
+                  <div class="type-desc">Altercation, fight, security incident</div>
+                </div>
+                <div class="type-check"></div>
+              </div>
+              <div class="type-card">
+                <div class="type-icon liquor">&#127864;</div>
+                <div class="type-info">
+                  <div class="type-name">Liquor Liability</div>
+                  <div class="type-desc">Over-serving, intoxication</div>
+                </div>
+                <div class="type-check"></div>
+              </div>
+              <div class="type-card">
+                <div class="type-icon harassment">&#128101;</div>
+                <div class="type-info">
+                  <div class="type-name">Sexual Harassment</div>
+                  <div class="type-desc">Patron or employee claims</div>
+                </div>
+                <div class="type-check"></div>
+              </div>
+              <div class="type-card">
+                <div class="type-icon property">&#127975;</div>
+                <div class="type-info">
+                  <div class="type-name">Property Damage</div>
+                  <div class="type-desc">Fire, flood, third-party damage</div>
+                </div>
+                <div class="type-check"></div>
+              </div>
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-primary">Continue</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Large tap targets for drunk / stressed users at 2 AM. No login needed — the magic link token identifies the venue. Explanation text tells staff WHY we need this.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 2: BASIC DETAILS ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 02</div>
+      <div class="screen-title">Basic Details</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">1:49 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Slip & Fall</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar current"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+            </div>
+            <div class="wiz-step-label">Step 2 of 5 &middot; Basic Details</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">When and where?</div>
+
+            <div class="field-group">
+              <div class="field-label">Date & Time of Incident</div>
+              <div class="field-input filled" style="display: flex; justify-content: space-between;">
+                <span>Feb 27, 2026</span>
+                <span style="color: var(--muted);">1:32 AM</span>
+              </div>
+              <div class="field-hint">Pre-filled based on when you texted. Adjust if different.</div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Location</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--accent); background: #f5f3ee; font-size: 13px; font-weight: 500;">Bar Area</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Dance Floor</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Bathroom</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Entrance</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Parking Lot</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Sidewalk</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Other</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Injured person's name</div>
+              <div class="field-input" style="color: #c4c0ba;">First and last name</div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <div class="field-label">Phone</div>
+                <div class="field-input" style="color: #c4c0ba; font-size: 13px;">Phone number</div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Address</div>
+                <div class="field-input" style="color: #c4c0ba; font-size: 13px;">Street address</div>
+              </div>
+            </div>
+
+            <div class="wiz-explanation">
+              <strong>Why we ask:</strong> Patron contact info is critical for the claims process. If they say "I'm fine" now, a lawsuit could still come months later. Get the info while everyone's still here.
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-secondary btn-small">Back</div>
+            <div class="btn btn-primary">Continue</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Location uses chip selectors (one tap) instead of typing. Date/time pre-filled from SMS timestamp. "Why we ask" box builds trust and explains the business reason.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 3: EVIDENCE CAPTURE ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 03</div>
+      <div class="screen-title">Evidence Capture</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">1:52 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Slip & Fall</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar current"></div>
+              <div class="wiz-progress-bar"></div>
+              <div class="wiz-progress-bar"></div>
+            </div>
+            <div class="wiz-step-label">Step 3 of 5 &middot; Evidence</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">Capture evidence</div>
+            <div class="wiz-explanation">
+              Photos taken now are the most valuable evidence. Snap the area of the incident, any defects (wet floor, broken item), and wide shots of the surroundings.
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Photos of the scene</div>
+              <div class="upload-area">
+                <div class="upload-icon">&#128247;</div>
+                <div class="upload-text">Take a photo or upload</div>
+                <div class="upload-hint">Photos of area, close-ups of defects, wide shots</div>
+                <button class="upload-btn">Open Camera</button>
+              </div>
+            </div>
+
+            <div class="uploaded-file">
+              <div class="uploaded-thumb">&#128248;</div>
+              <div class="uploaded-info">
+                <div class="uploaded-name">bar_area_wet_floor.jpg</div>
+                <div class="uploaded-size">2.4 MB &middot; 1:52 AM</div>
+              </div>
+              <div class="uploaded-check">&#10003;</div>
+            </div>
+
+            <div class="uploaded-file">
+              <div class="uploaded-thumb">&#128248;</div>
+              <div class="uploaded-info">
+                <div class="uploaded-name">close_up_spill.jpg</div>
+                <div class="uploaded-size">1.8 MB &middot; 1:52 AM</div>
+              </div>
+              <div class="uploaded-check">&#10003;</div>
+            </div>
+
+            <div style="background: #fef8f7; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start;">
+              <span style="font-size: 16px;">&#128249;</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--accent-red);">Don't forget video footage</div>
+                <div style="font-size: 11px; color: #8c8880; margin-top: 2px; line-height: 1.4;">Camera footage at your venue may overwrite in ~30 days. We'll remind you, but the sooner you download and upload it, the better.</div>
+              </div>
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-secondary btn-small">Back</div>
+            <div class="btn btn-primary">Continue</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Camera opens natively on mobile. Footage overwrite warning shown inline. Photos are uploaded immediately (no waiting for final submit) so nothing is lost if the session is interrupted.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 4: WITNESSES ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 04</div>
+      <div class="screen-title">Witnesses</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">1:55 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Slip & Fall</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar current"></div>
+              <div class="wiz-progress-bar"></div>
+            </div>
+            <div class="wiz-step-label">Step 4 of 5 &middot; Witnesses</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">Who saw what happened?</div>
+            <div class="wiz-explanation">
+              Witness accounts strengthen your defense. Capture names and contact info while people are still here. Statements can be collected later via magic link.
+            </div>
+
+            <div class="witness-card">
+              <div class="witness-card-header">
+                <div class="witness-name">Maria Santos</div>
+                <div class="witness-status pending">INFO ONLY</div>
+              </div>
+              <div class="witness-detail">Bartender &middot; (555) 012-3456</div>
+              <div class="witness-detail">Was working the bar area when incident occurred</div>
+            </div>
+
+            <div class="witness-card">
+              <div class="witness-card-header">
+                <div class="witness-name">Jake Thompson</div>
+                <div class="witness-status pending">INFO ONLY</div>
+              </div>
+              <div class="witness-detail">Security &middot; (555) 789-0123</div>
+              <div class="witness-detail">First responder to the scene</div>
+            </div>
+
+            <div style="border: 2px dashed var(--border); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;">
+              <div style="font-size: 20px; color: var(--muted); margin-bottom: 4px;">+</div>
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">Add another witness</div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">Patron, staff, security, or bystander</div>
+            </div>
+
+            <div class="wiz-explanation">
+              <strong>Tip:</strong> You can add witnesses now and collect their written statements later. Your manager can send each witness a magic link to submit their own account.
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-secondary btn-small">Back</div>
+            <div class="btn btn-primary">Continue</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Minimal fields — just name + phone. Written statements come later via their own magic links. "Add another witness" uses a card pattern rather than a form to reduce cognitive load.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- ROW 2: STATEMENT + CONFIRMATION + ADMIN           -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Statement, Confirmation & Admin View</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- ──────── SCREEN 5: STAFF STATEMENT ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 05</div>
+      <div class="screen-title">Your Statement</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">1:57 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Slip & Fall</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar filled"></div>
+              <div class="wiz-progress-bar current"></div>
+            </div>
+            <div class="wiz-step-label">Step 5 of 5 &middot; Your Statement</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">What did you see?</div>
+            <div class="wiz-explanation">
+              Write what you observed in your own words. Be specific about what you saw, heard, and did. This statement may be used in a legal proceeding.
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Your name</div>
+              <div class="field-input" style="color: #c4c0ba;">Your full name</div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Your role</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--accent); background: #f5f3ee; font-size: 13px; font-weight: 500;">Bartender</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Security</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Manager</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Server</span>
+                <span style="padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #faf9f6; font-size: 13px; color: var(--muted);">Other</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Your statement</div>
+              <div class="field-input field-textarea" style="min-height: 120px; color: #c4c0ba; font-size: 14px; line-height: 1.5;">Describe what you observed before, during, and after the incident...</div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: #f5f4f0; border-radius: 8px;">
+              <div style="width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;"></div>
+              <div style="font-size: 12px; color: var(--muted); line-height: 1.5;">I attest that the information provided in this report is true and accurate to the best of my knowledge.</div>
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-secondary btn-small">Back</div>
+            <div class="btn btn-primary">Submit Report</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Attestation checkbox adds legal weight. Statement field is large and prominent. Role selection helps categorize the report. "Submit Report" is the final CTA — no ambiguity.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 6: CONFIRMATION ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 06</div>
+      <div class="screen-title">Confirmation</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">2:01 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header" style="border-bottom: none;">
+            <div class="wiz-brand">Third Space &middot; The Velvet Room</div>
+          </div>
+          <div class="wiz-body" style="align-items: center; text-align: center; justify-content: center;">
+
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 8px;">&#10003;</div>
+
+            <div class="wiz-question" style="font-size: 24px;">Report submitted</div>
+            <div style="font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 280px;">
+              Thank you. Your report has been received and your manager has been notified.
+            </div>
+
+            <div style="width: 100%; text-align: left; margin-top: 8px;">
+              <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 10px;">What happens next:</div>
+              <div class="checklist">
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">Your incident report</div>
+                </div>
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">2 photos uploaded</div>
+                </div>
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">2 witnesses logged</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon missing">!</div>
+                  <div class="checklist-label">Video footage (we'll remind you)</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon missing">!</div>
+                  <div class="checklist-label">Witness statements (sent via link)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wiz-explanation" style="text-align: left; width: 100%; margin-top: 8px;">
+              <strong>Camera footage reminder:</strong> We'll text you when it's time to download and upload your camera footage. Most DVR systems overwrite in 30 days.
+            </div>
+          </div>
+          <div class="wiz-footer" style="flex-direction: column; gap: 8px;">
+            <div class="btn btn-primary" style="width: 100%;">Close</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Shows what's complete and what's still needed. Sets expectations about follow-up (footage reminder). Clear exit — no dead end. The missing items aren't blockers, just future actions.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 7: ADMIN — INCIDENT LIST ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 07</div>
+      <div class="screen-title">Admin — Incidents List</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">9:15 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="admin-header">
+            <div class="admin-brand">Third Space &middot; Admin</div>
+            <div class="admin-title">Incidents</div>
+            <div class="admin-meta">The Velvet Room &middot; 4 open</div>
+          </div>
+
+          <div style="padding: 12px; display: flex; gap: 6px;">
+            <span style="padding: 6px 12px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 600;">Open (4)</span>
+            <span style="padding: 6px 12px; border-radius: 6px; background: #f0ede8; color: var(--muted); font-size: 12px; font-weight: 500;">In Review (2)</span>
+            <span style="padding: 6px 12px; border-radius: 6px; background: #f0ede8; color: var(--muted); font-size: 12px; font-weight: 500;">Closed</span>
+          </div>
+
+          <div style="padding: 0 12px; display: flex; flex-direction: column; gap: 10px;">
+            <!-- Incident card 1 -->
+            <div class="admin-card" style="margin: 0;">
+              <div class="admin-card-header">
+                <span>Slip & Fall &middot; Bar Area</span>
+                <span class="status-badge open">45%</span>
+              </div>
+              <div class="admin-card-body" style="gap: 4px;">
+                <div style="font-size: 12px; color: var(--muted);">Feb 27, 1:32 AM &middot; Reported by Alex Kim</div>
+                <div style="font-size: 12px; color: var(--accent-red); font-weight: 500;">Missing: video footage, 2 witness statements</div>
+                <div style="display: flex; gap: 4px; margin-top: 4px;">
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">2 photos</span>
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">1 report</span>
+                  <span style="font-size: 10px; padding: 2px 6px; background: #fef0e0; border-radius: 3px; color: #b45309; font-family: 'Geist Mono', monospace;">2 witnesses</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Incident card 2 -->
+            <div class="admin-card" style="margin: 0;">
+              <div class="admin-card-header">
+                <span>Assault &middot; Entrance</span>
+                <span class="status-badge review">80%</span>
+              </div>
+              <div class="admin-card-body" style="gap: 4px;">
+                <div style="font-size: 12px; color: var(--muted);">Feb 25, 11:48 PM &middot; 3 reports filed</div>
+                <div style="font-size: 12px; color: var(--accent-orange); font-weight: 500;">Missing: security company info</div>
+                <div style="display: flex; gap: 4px; margin-top: 4px;">
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">5 photos</span>
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">3 reports</span>
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">video</span>
+                  <span style="font-size: 10px; padding: 2px 6px; background: #dcfce7; border-radius: 3px; color: #15803d; font-family: 'Geist Mono', monospace;">police rpt</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Incident card 3 -->
+            <div class="admin-card" style="margin: 0;">
+              <div class="admin-card-header">
+                <span>Liquor Liability</span>
+                <span class="status-badge open">25%</span>
+              </div>
+              <div class="admin-card-body" style="gap: 4px;">
+                <div style="font-size: 12px; color: var(--muted);">Feb 22, 2:10 AM &middot; 1 report filed</div>
+                <div style="font-size: 12px; color: var(--accent-red); font-weight: 500;">Missing: video, POS data, training records</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Admin sees all incidents at a glance. Completeness percentage is the key metric — it drives urgency. Color-coded missing items tell the GM exactly what action to take.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 8: ADMIN — INCIDENT DETAIL ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 08</div>
+      <div class="screen-title">Admin — Incident Detail</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">9:17 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="admin-header" style="padding-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 14px; opacity: 0.6;">&larr;</span>
+              <div class="admin-brand" style="margin-bottom: 0;">Back to Incidents</div>
+            </div>
+            <div class="admin-title" style="font-size: 16px;">Slip & Fall &middot; Bar Area</div>
+            <div class="admin-meta">Feb 27, 1:32 AM &middot; The Velvet Room</div>
+          </div>
+
+          <div style="padding: 12px; display: flex; justify-content: center;">
+            <div class="score-ring medium">
+              <div class="score-inner">
+                <div class="score-value">45%</div>
+                <div class="score-label">Complete</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evidence checklist -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span>Evidence Checklist</span>
+              <span style="font-size: 10px; color: var(--muted); font-family: 'Geist Mono', monospace;">3/7</span>
+            </div>
+            <div class="admin-card-body">
+              <div class="checklist">
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">Incident report (1)</div>
+                </div>
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">Scene photos (2)</div>
+                </div>
+                <div class="checklist-item done">
+                  <div class="check-icon done">&#10003;</div>
+                  <div class="checklist-label">Patron info</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon pending"></div>
+                  <div class="checklist-label">Video footage</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon pending"></div>
+                  <div class="checklist-label">Witness statements (0/2)</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon pending"></div>
+                  <div class="checklist-label">Cleaning / maintenance logs</div>
+                </div>
+                <div class="checklist-item missing">
+                  <div class="check-icon pending"></div>
+                  <div class="checklist-label">Staff statements</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="admin-action-btn">
+              <span class="admin-action-icon">&#128279;</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Send magic link to staff</div>
+                <div style="font-size: 11px; color: var(--muted);">Collect statements from other witnesses</div>
+              </div>
+            </div>
+            <div class="admin-action-btn">
+              <span class="admin-action-icon">&#128228;</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Upload evidence</div>
+                <div style="font-size: 11px; color: var(--muted);">Video, POS data, cleaning logs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Completeness ring is the focal point. Checklist shows exactly what's collected vs. missing (based on the incident type's minimum info set from the PRD). Action buttons let the GM immediately send magic links or upload supplementary evidence.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- ROW 3: EDGE CASES / SECONDARY FLOWS              -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Secondary Flows</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- ──────── SCREEN 0: LANDING (SMS + QR) ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 00</div>
+      <div class="screen-title">Landing</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">11:42 PM</div>
+        </div>
+        <div class="phone-content">
+          <div style="padding: 24px 20px; flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">
+            <div style="margin-top: 40px;">
+              <div style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);">Third Space</div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; margin-top: 8px;">Report an Incident</div>
+              <div style="font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5;">The Velvet Room</div>
+              <div style="display:flex; gap:6px; justify-content:center; margin-top:10px;">
+                <span style="font-size:10px; font-family:'Geist Mono',monospace; background:#f0f4ff; color:#3b7dd8; padding:3px 8px; border-radius:4px; letter-spacing:0.05em;">SMS</span>
+                <span style="font-size:10px; font-family:'Geist Mono',monospace; background:#f0f4ff; color:#3b7dd8; padding:3px 8px; border-radius:4px; letter-spacing:0.05em;">QR CODE</span>
+              </div>
+            </div>
+
+            <div style="background: #faf9f6; border-radius: 12px; padding: 16px; width: 100%; text-align: left;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Before you start:</div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <span style="font-size: 14px;">&#9201;</span>
+                  <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">This takes about <strong style="color: var(--text);">5 minutes</strong></div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <span style="font-size: 14px;">&#128247;</span>
+                  <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Have your <strong style="color: var(--text);">phone camera ready</strong> for photos</div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <span style="font-size: 14px;">&#128274;</span>
+                  <div style="font-size: 12px; color: var(--muted); line-height: 1.4;"><strong style="color: var(--text);">No login needed</strong> — your report is secure</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #f0f4ff; border-radius: 12px; padding: 14px 16px; width: 100%; text-align: left; border-left: 3px solid var(--accent-blue);">
+              <div style="font-size: 12px; color: #1d4ed8; line-height: 1.5;">
+                <strong>Why this matters:</strong> Detailed incident reports help protect your venue from costly lawsuits. The more data you capture now, the stronger your defense later.
+              </div>
+            </div>
+
+            <div class="btn btn-primary" style="width: 100%; margin-top: auto;">Start Report</div>
+            <div style="font-size: 11px; color: var(--muted);">Your report is confidential and encrypted</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Shared landing for both SMS magic link and QR code entry. Explains what to expect before starting. Sets up the "5 minutes" time commitment and "camera ready" prep. After "Start Report," it goes to Screen 01 (type selection).
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 10: WITNESS MAGIC LINK ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 10</div>
+      <div class="screen-title">Witness Statement</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">3:15 PM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Witness Statement</div>
+            <div class="wiz-progress">
+              <div class="wiz-progress-bar current"></div>
+            </div>
+            <div class="wiz-step-label">1 step &middot; Your Statement</div>
+          </div>
+          <div class="wiz-body">
+            <div class="wiz-question">Hi Maria, what did you see?</div>
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">
+              You're being asked to provide a statement about an incident at <strong style="color: var(--text);">The Velvet Room</strong> on <strong style="color: var(--text);">Feb 27, 2026</strong>.
+            </div>
+
+            <div class="wiz-explanation">
+              Your statement helps protect the venue. Describe what you saw before, during, and after the incident in your own words. Be as specific as possible.
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Your statement</div>
+              <div class="field-input field-textarea" style="min-height: 160px; color: #c4c0ba; font-size: 14px; line-height: 1.5;">I was working the bar when I noticed a patron slip near the service well area. The floor had just been mopped about 20 minutes prior...</div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">Additional photos (optional)</div>
+              <div class="upload-area" style="padding: 16px;">
+                <div class="upload-text" style="font-size: 13px;">Add photos if you have any</div>
+                <div class="upload-hint">Optional — any photos you took that night</div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: #f5f4f0; border-radius: 8px;">
+              <div style="width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--accent); background: var(--accent); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px;">&#10003;</div>
+              <div style="font-size: 12px; color: var(--muted); line-height: 1.5;">I attest that this statement is true and accurate.</div>
+            </div>
+          </div>
+          <div class="wiz-footer">
+            <div class="btn btn-primary">Submit Statement</div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Witness magic link is a single-page flow — no wizard steps. Personalized with the witness's name and incident context. Simpler than the full report because witnesses only need to provide their statement.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 11: ADMIN — SEND MAGIC LINK ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 11</div>
+      <div class="screen-title">Admin — Send Links</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">9:20 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="admin-header" style="padding-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 14px; opacity: 0.6;">&larr;</span>
+              <div class="admin-brand" style="margin-bottom: 0;">Back to Incident</div>
+            </div>
+            <div class="admin-title" style="font-size: 16px;">Send Magic Links</div>
+            <div class="admin-meta">Slip & Fall &middot; Feb 27 &middot; Bar Area</div>
+          </div>
+
+          <div class="wiz-body">
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">
+              Send a magic link to staff or witnesses. They'll receive an SMS with a secure link to submit their statement — no login needed.
+            </div>
+
+            <div class="witness-card" style="border-color: var(--accent-green);">
+              <div class="witness-card-header">
+                <div class="witness-name">Maria Santos</div>
+                <div class="witness-status done">SENT</div>
+              </div>
+              <div class="witness-detail">Bartender &middot; (555) 012-3456</div>
+              <div style="font-size: 10px; color: var(--accent-green); font-family: 'Geist Mono', monospace; margin-top: 2px;">Link sent 9:18 AM &middot; Not yet submitted</div>
+            </div>
+
+            <div class="witness-card">
+              <div class="witness-card-header">
+                <div class="witness-name">Jake Thompson</div>
+                <div class="witness-status pending">NOT SENT</div>
+              </div>
+              <div class="witness-detail">Security &middot; (555) 789-0123</div>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <span style="padding: 6px 14px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer;">Send Link via SMS</span>
+                <span style="padding: 6px 14px; border-radius: 6px; background: #f0ede8; color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer;">Copy Link</span>
+              </div>
+            </div>
+
+            <div style="border: 2px dashed var(--border); border-radius: 10px; padding: 14px; text-align: center;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">+ Add new person</div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">Enter a name and phone number</div>
+            </div>
+
+            <div class="wiz-explanation">
+              <strong>Tip:</strong> Each person gets their own unique link. You can track who has submitted and who hasn't from the incident detail page. They have 72 hours before the link expires.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> Admin can send links, copy links (for WhatsApp/other channels), and track status. "Add new person" handles witnesses or staff not in the original report. This is the key follow-up tool for completeness.
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────── SCREEN 12: CAMERA FOOTAGE REMINDER ──────── -->
+    <div class="screen-wrapper">
+      <div class="screen-label">Screen 12</div>
+      <div class="screen-title">Footage Reminder</div>
+      <div class="phone">
+        <div class="phone-statusbar">
+          <div class="phone-notch"></div>
+          <div class="phone-time">10:00 AM</div>
+        </div>
+        <div class="phone-content">
+          <div class="wiz-header">
+            <div class="wiz-brand">Third Space &middot; Evidence Upload</div>
+          </div>
+          <div class="wiz-body">
+            <div style="background: #fef8f7; border: 1px solid #fecaca; border-radius: 12px; padding: 16px; text-align: center;">
+              <div style="font-size: 28px; margin-bottom: 8px;">&#9200;</div>
+              <div style="font-size: 18px; font-weight: 700; color: var(--accent-red); letter-spacing: -0.02em;">Camera footage may expire</div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5;">
+                Your DVR footage from <strong style="color: var(--text);">Feb 27</strong> could be overwritten in <strong style="color: var(--accent-red);">23 days</strong>
+              </div>
+            </div>
+
+            <div class="wiz-question" style="font-size: 18px;">Upload footage for this incident</div>
+
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
+              For a <strong style="color: var(--text);">Slip & Fall</strong> incident, we need:
+            </div>
+
+            <div class="checklist">
+              <div class="checklist-item">
+                <div class="check-icon pending"></div>
+                <div class="checklist-label">Footage of the incident itself</div>
+              </div>
+              <div class="checklist-item">
+                <div class="check-icon pending"></div>
+                <div class="checklist-label">2 hours prior to incident (area)</div>
+              </div>
+              <div class="checklist-item">
+                <div class="check-icon pending"></div>
+                <div class="checklist-label">Patron entering premises</div>
+              </div>
+              <div class="checklist-item">
+                <div class="check-icon pending"></div>
+                <div class="checklist-label">Patron leaving premises</div>
+              </div>
+            </div>
+
+            <div class="wiz-explanation">
+              <strong>Camera tips:</strong> Check cameras nearest to the Bar Area. Export directly from your DVR in native format — don't record the screen with your phone. Metadata matters for legal proceedings.
+            </div>
+
+            <div class="upload-area">
+              <div class="upload-icon">&#128249;</div>
+              <div class="upload-text">Upload video footage</div>
+              <div class="upload-hint">Native DVR format preferred &middot; Max 2GB per file</div>
+              <button class="upload-btn">Choose Files</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-box">
+          <strong>Design note:</strong> This is the screen staff/admin sees when tapping the footage reminder link in SMS. Urgent visual treatment (red, countdown). Footage requirements are specific to the incident type. Camera angle suggestions help less experienced staff.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-note">Third Space &middot; Mobile Wireframes &middot; Incident Reporting</div>
+    <div class="footer-note">v1 Draft — Feb 2026</div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ── STATE ──
+  const state = {
+    panX: 0, panY: 0, zoom: 1,
+    minZoom: 0.08, maxZoom: 2,
+    isPanning: false, isDragging: false,
+    dragTarget: null, startX: 0, startY: 0,
+    locked: true,
+    nodes: {}
+  };
+
+  // ── LAYOUT: where each screen goes on the canvas ──
+  const LAYOUT = {
+    'screen-00': { x: 0,    y: 0 },
+    'screen-01': { x: 600,  y: 0 },
+    'screen-02': { x: 1200, y: 0 },
+    'screen-03': { x: 1800, y: 0 },
+    'screen-04': { x: 2400, y: 0 },
+    'screen-05': { x: 3000, y: 0 },
+    'screen-06': { x: 3600, y: 0 },
+    'screen-07': { x: 4200, y: 0 },
+    'screen-08': { x: 4800, y: 0 },
+    'screen-10': { x: 2400, y: 950 },
+    'screen-11': { x: 3000, y: 950 },
+    'screen-12': { x: 3600, y: 950 },
+  };
+
+  // ── CONNECTIONS ──
+  const connections = [
+    { from: 'screen-00', to: 'screen-01', label: 'Start Report', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-01', to: 'screen-02', label: 'Next', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-02', to: 'screen-03', label: 'Next', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-03', to: 'screen-04', label: 'Next', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-04', to: 'screen-05', label: 'Next', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-05', to: 'screen-06', label: 'Submit', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-07', to: 'screen-08', label: 'View Detail', fromSide: 'right', toSide: 'left' },
+    { from: 'screen-06', to: 'screen-07', label: 'SMS to Admin', fromSide: 'right', toSide: 'left', dashed: true },
+    { from: 'screen-04', to: 'screen-10', label: 'Witness Link', fromSide: 'bottom', toSide: 'top', dashed: true },
+    { from: 'screen-11', to: 'screen-10', label: 'Magic Link', fromSide: 'left', toSide: 'right', dashed: true },
+    { from: 'screen-06', to: 'screen-12', label: '30-Day Reminder', fromSide: 'bottom', toSide: 'top', dashed: true },
+  ];
+
+  const NODE_W = 391;
+  const NODE_H = 850;
+  const LABEL_H = 44;
+
+  // ── BUILD CANVAS DOM ──
+  const viewport = document.createElement('div');
+  viewport.id = 'canvas-viewport';
+  const world = document.createElement('div');
+  world.id = 'canvas-world';
+
+  // SVG overlay
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.id = 'connections-svg';
+  svg.setAttribute('style', 'position:absolute;top:0;left:0;width:1px;height:1px;overflow:visible;pointer-events:none;');
+  svg.innerHTML = `<defs>
+    <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#8c8880"/></marker>
+    <marker id="ah-d" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#3b7dd8"/></marker>
+  </defs>`;
+  world.appendChild(svg);
+
+  // Move screen-wrappers into canvas nodes
+  const container = document.querySelector('.container');
+  const wrappers = container.querySelectorAll('.screen-wrapper');
+  wrappers.forEach((wrapper) => {
+    const labelEl = wrapper.querySelector('.screen-label');
+    if (!labelEl) return;
+    const num = labelEl.textContent.replace(/\D/g, '').padStart(2, '0');
+    const id = 'screen-' + num;
+    const pos = LAYOUT[id];
+    if (!pos) return;
+    const node = document.createElement('div');
+    node.className = 'canvas-node';
+    node.dataset.screenId = id;
+    node.appendChild(wrapper);
+    node.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    world.appendChild(node);
+    state.nodes[id] = { x: pos.x, y: pos.y };
+  });
+
+  viewport.appendChild(world);
+  document.body.prepend(viewport);
+  document.body.classList.add('canvas-mode');
+
+  // ── TRANSFORM ──
+  function applyTransform() {
+    world.style.transform = `translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`;
+    const s = 24 * state.zoom;
+    viewport.style.backgroundSize = `${s}px ${s}px`;
+    viewport.style.backgroundPosition = `${state.panX % s}px ${state.panY % s}px`;
+    document.getElementById('zoom-level').textContent = Math.round(state.zoom * 100) + '%';
+  }
+
+  // ── PAN ──
+  viewport.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.canvas-node') || e.target.closest('#canvas-controls')) return;
+    state.isPanning = true;
+    state.startX = e.clientX - state.panX;
+    state.startY = e.clientY - state.panY;
+    viewport.setPointerCapture(e.pointerId);
+    viewport.classList.add('panning');
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (state.isPanning) {
+      state.panX = e.clientX - state.startX;
+      state.panY = e.clientY - state.startY;
+      applyTransform();
+      return;
+    }
+    if (state.isDragging && state.dragTarget) {
+      const id = state.dragTarget.dataset.screenId;
+      const x = (e.clientX - state.panX) / state.zoom - state.startX;
+      const y = (e.clientY - state.panY) / state.zoom - state.startY;
+      state.nodes[id] = { x, y };
+      state.dragTarget.style.transform = `translate(${x}px,${y}px)`;
+      scheduleRedraw();
+    }
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (state.isDragging && state.dragTarget) {
+      state.dragTarget.classList.remove('dragging');
+    }
+    state.isPanning = false;
+    state.isDragging = false;
+    state.dragTarget = null;
+    viewport.classList.remove('panning');
+  });
+
+  // ── ZOOM ──
+  viewport.addEventListener('wheel', (e) => {
+    if (!e.metaKey && !e.ctrlKey) return; // Require CMD (Mac) or Ctrl (Win)
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.92 : 1.08;
+    const newZoom = Math.max(state.minZoom, Math.min(state.maxZoom, state.zoom * delta));
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const scale = newZoom / state.zoom;
+    state.panX = mx - scale * (mx - state.panX);
+    state.panY = my - scale * (my - state.panY);
+    state.zoom = newZoom;
+    applyTransform();
+    scheduleRedraw();
+  }, { passive: false });
+
+  // ── NODE DRAG ──
+  world.addEventListener('pointerdown', (e) => {
+    const node = e.target.closest('.canvas-node');
+    if (!node) return;
+    e.stopPropagation();
+    if (state.locked) return;
+    state.isDragging = true;
+    state.dragTarget = node;
+    const id = node.dataset.screenId;
+    const pos = state.nodes[id];
+    state.startX = (e.clientX - state.panX) / state.zoom - pos.x;
+    state.startY = (e.clientY - state.panY) / state.zoom - pos.y;
+    node.classList.add('dragging');
+  });
+
+  // ── SVG CONNECTIONS ──
+  let rafId = null;
+  function scheduleRedraw() {
+    if (!rafId) {
+      rafId = requestAnimationFrame(() => { redrawConnections(); rafId = null; });
+    }
+  }
+
+  function getAnchor(id, side) {
+    const p = state.nodes[id];
+    const cx = p.x + NODE_W / 2;
+    const cy = p.y + LABEL_H + (NODE_H - LABEL_H) / 2;
+    switch (side) {
+      case 'right':  return { x: p.x + NODE_W, y: cy };
+      case 'left':   return { x: p.x, y: cy };
+      case 'bottom': return { x: cx, y: p.y + NODE_H };
+      case 'top':    return { x: cx, y: p.y + LABEL_H };
+    }
+  }
+
+  function ctrlPt(pt, side, tension) {
+    switch (side) {
+      case 'right':  return { x: pt.x + tension, y: pt.y };
+      case 'left':   return { x: pt.x - tension, y: pt.y };
+      case 'bottom': return { x: pt.x, y: pt.y + tension };
+      case 'top':    return { x: pt.x, y: pt.y - tension };
+    }
+  }
+
+  function bezMid(a, c1, c2, b) {
+    const t = 0.5, u = 0.5;
+    return {
+      x: u*u*u*a.x + 3*u*u*t*c1.x + 3*u*t*t*c2.x + t*t*t*b.x,
+      y: u*u*u*a.y + 3*u*u*t*c1.y + 3*u*t*t*c2.y + t*t*t*b.y,
+    };
+  }
+
+  function redrawConnections() {
+    const defs = svg.querySelector('defs').outerHTML;
+    let paths = '';
+    for (const c of connections) {
+      const a = getAnchor(c.from, c.fromSide);
+      const b = getAnchor(c.to, c.toSide);
+      const dist = Math.hypot(b.x - a.x, b.y - a.y);
+      const tension = Math.max(80, dist * 0.35);
+      const cp1 = ctrlPt(a, c.fromSide, tension);
+      const cp2 = ctrlPt(b, c.toSide, tension);
+      const d = `M ${a.x} ${a.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${b.x} ${b.y}`;
+      const color = c.dashed ? '#3b7dd8' : '#8c8880';
+      const marker = c.dashed ? 'ah-d' : 'ah';
+      const dash = c.dashed ? 'stroke-dasharray="8 5"' : '';
+      paths += `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" ${dash} marker-end="url(#${marker})"/>`;
+      if (c.label) {
+        const mid = bezMid(a, cp1, cp2, b);
+        const tw = c.label.length * 6.5 + 16;
+        paths += `<rect x="${mid.x - tw/2}" y="${mid.y - 11}" width="${tw}" height="22" rx="6" fill="white" stroke="${c.dashed ? '#c5d8f0' : '#e5e2dc'}" stroke-width="1"/>`;
+        paths += `<text x="${mid.x}" y="${mid.y + 4}" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="0.03em" fill="${color}">${c.label}</text>`;
+      }
+    }
+    svg.innerHTML = defs + paths;
+  }
+
+  // ── FIT ALL ──
+  function fitAll(animate) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const id in state.nodes) {
+      const p = state.nodes[id];
+      minX = Math.min(minX, p.x);
+      minY = Math.min(minY, p.y);
+      maxX = Math.max(maxX, p.x + NODE_W);
+      maxY = Math.max(maxY, p.y + NODE_H);
+    }
+    const pad = 100;
+    const cw = maxX - minX + pad * 2;
+    const ch = maxY - minY + pad * 2;
+    const rect = viewport.getBoundingClientRect();
+    state.zoom = Math.min(rect.width / cw, rect.height / ch, 1);
+    state.panX = (rect.width - cw * state.zoom) / 2 - (minX - pad) * state.zoom;
+    state.panY = (rect.height - ch * state.zoom) / 2 - (minY - pad) * state.zoom;
+    if (animate) {
+      world.style.transition = 'transform 0.4s ease';
+      setTimeout(() => { world.style.transition = ''; }, 450);
+    }
+    applyTransform();
+    redrawConnections();
+  }
+
+  // ── CONTROLS ──
+  document.getElementById('zoom-in').addEventListener('click', () => {
+    const rect = viewport.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const newZoom = Math.min(state.maxZoom, state.zoom * 1.25);
+    const scale = newZoom / state.zoom;
+    state.panX = cx - scale * (cx - state.panX);
+    state.panY = cy - scale * (cy - state.panY);
+    state.zoom = newZoom;
+    world.style.transition = 'transform 0.2s ease';
+    applyTransform();
+    redrawConnections();
+    setTimeout(() => { world.style.transition = ''; }, 250);
+  });
+
+  document.getElementById('zoom-out').addEventListener('click', () => {
+    const rect = viewport.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const newZoom = Math.max(state.minZoom, state.zoom * 0.8);
+    const scale = newZoom / state.zoom;
+    state.panX = cx - scale * (cx - state.panX);
+    state.panY = cy - scale * (cy - state.panY);
+    state.zoom = newZoom;
+    world.style.transition = 'transform 0.2s ease';
+    applyTransform();
+    redrawConnections();
+    setTimeout(() => { world.style.transition = ''; }, 250);
+  });
+
+  document.getElementById('zoom-fit').addEventListener('click', () => fitAll(true));
+
+  document.getElementById('zoom-reset').addEventListener('click', () => {
+    const rect = viewport.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const scale = 1 / state.zoom;
+    state.panX = cx - scale * (cx - state.panX);
+    state.panY = cy - scale * (cy - state.panY);
+    state.zoom = 1;
+    world.style.transition = 'transform 0.3s ease';
+    applyTransform();
+    redrawConnections();
+    setTimeout(() => { world.style.transition = ''; }, 350);
+  });
+
+  // Lock toggle
+  const lockBtn = document.getElementById('lock-toggle');
+  function updateLockUI() {
+    lockBtn.classList.toggle('active', state.locked);
+    lockBtn.innerHTML = state.locked ? '&#128274;' : '&#128275;';
+    lockBtn.title = state.locked ? 'Unlock elements' : 'Lock elements';
+    document.body.classList.toggle('locked', state.locked);
+  }
+  lockBtn.addEventListener('click', () => {
+    state.locked = !state.locked;
+    updateLockUI();
+  });
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '=' || e.key === '+') { document.getElementById('zoom-in').click(); }
+    if (e.key === '-') { document.getElementById('zoom-out').click(); }
+    if (e.key === '0') { document.getElementById('zoom-fit').click(); }
+    if (e.key === '1') { document.getElementById('zoom-reset').click(); }
+    if (e.key === 'l') { lockBtn.click(); }
+  });
+
+  // ── INIT ──
+  updateLockUI();
+  fitAll(false);
+});
+</script>
+</body>
+</html>

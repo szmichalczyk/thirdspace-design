@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Third Space — Service Design Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf8;
+    --surface: #fff;
+    --border: #e5e2dc;
+    --border-light: #f0ede8;
+    --text: #1a1915;
+    --muted: #8c8880;
+    --accent-red: #dc4c3e;
+    --accent-orange: #e8832a;
+    --accent-green: #3d9a5c;
+    --accent-blue: #3b7dd8;
+    --accent-purple: #7c5cbf;
+    --lane-staff: #fef7ee;
+    --lane-system: #f0f4ff;
+    --lane-admin: #f5f0ff;
+    --lane-tpa: #f0faf4;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 48px 40px;
+  }
+
+  .page-nav {
+    position: fixed;
+    top: 20px;
+    right: 32px;
+    display: flex;
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 100;
+  }
+  .page-nav a {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    text-decoration: none;
+    transition: all 0.15s;
+    font-family: 'Geist Mono', monospace;
+  }
+  .page-nav a:hover { color: #111; background: #eee; }
+  .page-nav a.active { background: #111; color: #fff; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  .header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .subtitle {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-swatch {
+    width: 20px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ── FLOW CONTAINER ── */
+  .flow-section {
+    margin-bottom: 48px;
+  }
+  .flow-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .flow-section-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── SWIM LANES ── */
+  .swimlane-container {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .swimlane-header {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    border-bottom: 2px solid var(--border);
+  }
+  .swimlane-header-label {
+    padding: 12px 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    background: #f8f7f5;
+    border-right: 1px solid var(--border);
+  }
+  .swimlane-header-phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  }
+  .phase-label {
+    padding: 12px 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    text-align: center;
+    border-right: 1px solid var(--border-light);
+  }
+  .phase-label:last-child { border-right: none; }
+
+  .swimlane-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    border-bottom: 1px solid var(--border-light);
+    min-height: 100px;
+  }
+  .swimlane-row:last-child { border-bottom: none; }
+
+  .lane-label {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+    background: #f8f7f5;
+  }
+  .lane-label-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .lane-label-desc {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .lane-content {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+
+  .lane-cell {
+    padding: 12px;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 100px;
+  }
+  .lane-cell:last-child { border-right: none; }
+
+  .lane-cell.staff { background: var(--lane-staff); }
+  .lane-cell.system { background: var(--lane-system); }
+  .lane-cell.admin { background: var(--lane-admin); }
+  .lane-cell.tpa { background: var(--lane-tpa); }
+
+  /* ── FLOW NODES ── */
+  .node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .node-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .node-detail {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+
+  .node.trigger {
+    border-color: var(--accent-orange);
+    border-left: 3px solid var(--accent-orange);
+  }
+  .node.action {
+    border-color: var(--accent-blue);
+    border-left: 3px solid var(--accent-blue);
+  }
+  .node.auto {
+    border-color: var(--accent-green);
+    border-left: 3px solid var(--accent-green);
+  }
+  .node.decision {
+    border-color: var(--accent-purple);
+    border-left: 3px solid var(--accent-purple);
+    background: #faf8ff;
+  }
+  .node.alert {
+    border-color: var(--accent-red);
+    border-left: 3px solid var(--accent-red);
+    background: #fef8f7;
+  }
+
+  .node-icon {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  /* ── ARROW INDICATOR ── */
+  .arrow-right {
+    font-family: 'Geist Mono', monospace;
+    font-size: 16px;
+    color: var(--muted);
+    opacity: 0.5;
+  }
+
+  /* ── SEQUENCE FLOW ── */
+  .sequence {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .seq-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .seq-row:last-child { border-bottom: none; }
+
+  .seq-step {
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f7f5;
+    border-right: 1px solid var(--border);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .seq-actor {
+    width: 100px;
+    padding: 14px 12px;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .actor-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .actor-tag.staff { background: #fef0e0; color: #b45309; }
+  .actor-tag.system { background: #dbeafe; color: #1d4ed8; }
+  .actor-tag.admin { background: #ede9fe; color: #6d28d9; }
+  .actor-tag.tpa { background: #dcfce7; color: #15803d; }
+
+  .seq-content {
+    flex: 1;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .seq-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .seq-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .seq-channel {
+    width: 120px;
+    padding: 14px 12px;
+    border-left: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .channel-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Geist Mono', monospace;
+    background: #f5f5f5;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .seq-timing {
+    width: 100px;
+    padding: 14px 12px;
+    border-left: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    color: var(--muted);
+  }
+
+  /* ── DIVIDER ── */
+  .flow-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0;
+  }
+  .flow-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .flow-divider-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ── SMS MOCKUP ── */
+  .sms-mockup {
+    max-width: 340px;
+    margin: 0 auto;
+    background: #f2f2f7;
+    border-radius: 20px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sms-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5ea;
+    margin-bottom: 4px;
+  }
+  .sms-bubble {
+    max-width: 260px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .sms-bubble.outgoing {
+    background: #007aff;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .sms-bubble.incoming {
+    background: #e5e5ea;
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .sms-bubble .link {
+    color: #007aff;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  .sms-bubble.incoming .link {
+    color: #007aff;
+  }
+  .sms-time {
+    font-size: 10px;
+    color: #8e8e93;
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  /* ── TRIGGERS TABLE ── */
+  .triggers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .trigger-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .trigger-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .trigger-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .trigger-card-icon.sms { background: #dbeafe; }
+  .trigger-card-icon.email { background: #ede9fe; }
+  .trigger-card-icon.push { background: #fef0e0; }
+  .trigger-card-icon.system { background: #dcfce7; }
+  .trigger-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .trigger-card-body {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .trigger-card-timing {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-blue);
+    background: #f0f4ff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  /* ── NOTES ── */
+  .design-notes {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 32px;
+  }
+  .design-notes-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 10px;
+  }
+  .design-notes ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .design-notes li {
+    font-size: 12px;
+    color: #78716c;
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+  }
+  .design-notes li::before {
+    content: '~';
+    position: absolute;
+    left: 0;
+    color: #d97706;
+    font-weight: 600;
+  }
+
+  .footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  .footer-note {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── VISUAL FLOW DIAGRAM ── */
+  .visual-flow {
+    margin-bottom: 48px;
+  }
+  .visual-flow svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .visual-flow svg text {
+    font-family: 'Geist', -apple-system, sans-serif;
+  }
+  .visual-flow svg .lane-bg { opacity: 0.5; }
+  .visual-flow svg .lane-divider { stroke: var(--border); stroke-width: 1; stroke-dasharray: 6 4; }
+  .visual-flow svg .lane-label-text {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    fill: var(--muted);
+    font-weight: 500;
+  }
+  .visual-flow svg .node-rect {
+    stroke-width: 1.5;
+    rx: 8;
+    ry: 8;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
+  }
+  .visual-flow svg .node-text {
+    font-size: 10.5px;
+    font-weight: 600;
+    fill: var(--text);
+  }
+  .visual-flow svg .node-sub {
+    font-size: 8.5px;
+    fill: var(--muted);
+    font-weight: 400;
+  }
+  .visual-flow svg .arrow-path {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 1.5;
+  }
+  .visual-flow svg .arrow-path.dashed {
+    stroke: var(--muted);
+    stroke-dasharray: 5 3;
+    stroke-width: 1.2;
+  }
+  .visual-flow svg .channel-label {
+    font-size: 8px;
+    fill: var(--accent-blue);
+    font-family: 'Geist Mono', monospace;
+    font-weight: 500;
+  }
+  .visual-flow svg .branch-label {
+    font-size: 8px;
+    fill: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    font-style: italic;
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 32px 16px; }
+    .title { font-size: 28px; }
+    .seq-channel, .seq-timing { display: none; }
+    .seq-actor { width: 80px; }
+    .triggers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="page-nav">
+  <a href="thirdspace-call-prep.html">Call Prep</a>
+  <a href="thirdspace-shift-reports-calendar.html">Shift Reports</a>
+  <a href="thirdspace-service-flow.html" class="active">Service Flow</a>
+  <a href="thirdspace-mobile-wireframes.html">Wireframes</a>
+</nav>
+
+<div class="container">
+
+  <div class="header">
+    <div class="label">Service Design — Incident Reporting</div>
+    <h1 class="title">SMS + Magic Link Flow</h1>
+    <p class="subtitle">End-to-end service blueprint: from incident occurrence to evidence capture and TPA handoff</p>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--lane-staff);"></div> Staff (on-scene)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--lane-system);"></div> Thirdspace System</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--lane-admin);"></div> GM / Admin</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--lane-tpa);"></div> TPA / Insurance</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--accent-orange); border-color: transparent;"></div> Trigger</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--accent-blue); border-color: transparent;"></div> Action</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--accent-green); border-color: transparent;"></div> Automated</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: var(--accent-red); border-color: transparent;"></div> Alert</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- VISUAL FLOW DIAGRAM                      -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="visual-flow">
+    <div class="flow-section-title">Visual Flow — Happy Path + Branches</div>
+    <div class="flow-section-desc" style="margin-bottom: 16px;">The end-to-end flow from incident to TPA handoff. Solid arrows = happy path. Dashed arrows = branches and feedback loops.</div>
+
+    <svg viewBox="0 0 1300 560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="#1a1915"/>
+        </marker>
+        <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="#8c8880"/>
+        </marker>
+      </defs>
+
+      <!-- SWIM LANE BACKGROUNDS -->
+      <rect class="lane-bg" x="90" y="0" width="1210" height="130" fill="#fef7ee" rx="0"/>
+      <rect class="lane-bg" x="90" y="130" width="1210" height="130" fill="#f0f4ff" rx="0"/>
+      <rect class="lane-bg" x="90" y="260" width="1210" height="130" fill="#f5f0ff" rx="0"/>
+      <rect class="lane-bg" x="90" y="390" width="1210" height="130" fill="#f0faf4" rx="0"/>
+
+      <!-- LANE LABELS (left side) -->
+      <rect x="0" y="0" width="90" height="130" fill="#f8f7f5" rx="0"/>
+      <rect x="0" y="130" width="90" height="130" fill="#f2f1ee" rx="0"/>
+      <rect x="0" y="260" width="90" height="130" fill="#f8f7f5" rx="0"/>
+      <rect x="0" y="390" width="90" height="130" fill="#f2f1ee" rx="0"/>
+      <line x1="90" y1="0" x2="90" y2="520" stroke="#d8d2c8" stroke-width="1"/>
+
+      <text class="lane-label-text" x="45" y="58" text-anchor="middle">Staff</text>
+      <text class="lane-label-text" x="45" y="73" text-anchor="middle" style="font-size:7.5px;">(on-scene)</text>
+      <text class="lane-label-text" x="45" y="193" text-anchor="middle">System</text>
+      <text class="lane-label-text" x="45" y="208" text-anchor="middle" style="font-size:7.5px;">(automated)</text>
+      <text class="lane-label-text" x="45" y="323" text-anchor="middle">GM /</text>
+      <text class="lane-label-text" x="45" y="338" text-anchor="middle">Admin</text>
+      <text class="lane-label-text" x="45" y="453" text-anchor="middle">TPA /</text>
+      <text class="lane-label-text" x="45" y="468" text-anchor="middle">Insurance</text>
+
+      <!-- LANE DIVIDERS -->
+      <line class="lane-divider" x1="90" y1="130" x2="1300" y2="130"/>
+      <line class="lane-divider" x1="90" y1="260" x2="1300" y2="260"/>
+      <line class="lane-divider" x1="90" y1="390" x2="1300" y2="390"/>
+
+      <!-- ═══════════ NODES ═══════════ -->
+
+      <!-- N1: Incident occurs — Staff, Col 1 -->
+      <rect class="node-rect" x="108" y="40" width="130" height="50" fill="#fff" stroke="#e8832a"/>
+      <rect x="108" y="40" width="3" height="50" fill="#e8832a" rx="0"/>
+      <text class="node-text" x="173" y="61" text-anchor="middle">Incident occurs</text>
+      <text class="node-sub" x="173" y="76" text-anchor="middle">at or near venue</text>
+
+      <!-- N2: Text SMS — Staff, Col 2 -->
+      <rect class="node-rect" x="270" y="40" width="130" height="50" fill="#fff" stroke="#e8832a"/>
+      <rect x="270" y="40" width="3" height="50" fill="#e8832a" rx="0"/>
+      <text class="node-text" x="335" y="61" text-anchor="middle">Text Thirdspace</text>
+      <text class="node-sub" x="335" y="76" text-anchor="middle">any message works</text>
+
+      <!-- N3: Magic link reply — System, Col 2 -->
+      <rect class="node-rect" x="270" y="170" width="130" height="50" fill="#fff" stroke="#3b7dd8"/>
+      <rect x="270" y="170" width="3" height="50" fill="#3b7dd8" rx="0"/>
+      <text class="node-text" x="335" y="191" text-anchor="middle">Auto-reply with</text>
+      <text class="node-sub" x="335" y="206" text-anchor="middle">magic link (72h expiry)</text>
+
+      <!-- N4: Open wizard — Staff, Col 3 -->
+      <rect class="node-rect" x="448" y="40" width="130" height="50" fill="#fff" stroke="#e8832a"/>
+      <rect x="448" y="40" width="3" height="50" fill="#e8832a" rx="0"/>
+      <text class="node-text" x="513" y="61" text-anchor="middle">Open wizard</text>
+      <text class="node-sub" x="513" y="76" text-anchor="middle">select incident type</text>
+
+      <!-- N5: Complete report — Staff, Col 4 -->
+      <rect class="node-rect" x="618" y="40" width="130" height="50" fill="#fff" stroke="#e8832a"/>
+      <rect x="618" y="40" width="3" height="50" fill="#e8832a" rx="0"/>
+      <text class="node-text" x="683" y="61" text-anchor="middle">Complete report</text>
+      <text class="node-sub" x="683" y="76" text-anchor="middle">photos, witnesses, stmt</text>
+
+      <!-- N6: Create investigative file — System, Col 4 -->
+      <rect class="node-rect" x="618" y="170" width="130" height="50" fill="#fff" stroke="#3b7dd8"/>
+      <rect x="618" y="170" width="3" height="50" fill="#3b7dd8" rx="0"/>
+      <text class="node-text" x="683" y="191" text-anchor="middle">Create inv. file</text>
+      <text class="node-sub" x="683" y="206" text-anchor="middle">completeness score</text>
+
+      <!-- N7: Notify GM — System, Col 5 -->
+      <rect class="node-rect" x="788" y="170" width="130" height="50" fill="#fff" stroke="#3d9a5c"/>
+      <rect x="788" y="170" width="3" height="50" fill="#3d9a5c" rx="0"/>
+      <text class="node-text" x="853" y="191" text-anchor="middle">Notify GM</text>
+      <text class="node-sub" x="853" y="206" text-anchor="middle">SMS + email alert</text>
+
+      <!-- N8: Review dashboard — Admin, Col 5 -->
+      <rect class="node-rect" x="788" y="300" width="130" height="50" fill="#fff" stroke="#7c5cbf"/>
+      <rect x="788" y="300" width="3" height="50" fill="#7c5cbf" rx="0"/>
+      <text class="node-text" x="853" y="321" text-anchor="middle">Review dashboard</text>
+      <text class="node-sub" x="853" y="336" text-anchor="middle">see what's missing</text>
+
+      <!-- N9: Send magic links — Admin, Col 6 -->
+      <rect class="node-rect" x="958" y="300" width="130" height="50" fill="#fff" stroke="#7c5cbf"/>
+      <rect x="958" y="300" width="3" height="50" fill="#7c5cbf" rx="0"/>
+      <text class="node-text" x="1023" y="321" text-anchor="middle">Send magic links</text>
+      <text class="node-sub" x="1023" y="336" text-anchor="middle">to witnesses + staff</text>
+
+      <!-- N10: Compile case file — System, Col 7 -->
+      <rect class="node-rect" x="1128" y="170" width="140" height="50" fill="#fff" stroke="#3b7dd8"/>
+      <rect x="1128" y="170" width="3" height="50" fill="#3b7dd8" rx="0"/>
+      <text class="node-text" x="1198" y="191" text-anchor="middle">Compile case file</text>
+      <text class="node-sub" x="1198" y="206" text-anchor="middle">when threshold met</text>
+
+      <!-- N11: TPA review — TPA, Col 7 -->
+      <rect class="node-rect" x="1128" y="430" width="140" height="50" fill="#fff" stroke="#3d9a5c"/>
+      <rect x="1128" y="430" width="3" height="50" fill="#3d9a5c" rx="0"/>
+      <text class="node-text" x="1198" y="451" text-anchor="middle">TPA review + action</text>
+      <text class="node-sub" x="1198" y="466" text-anchor="middle">defensibility assessment</text>
+
+      <!-- N12: Nudge SMS (branch) — System, Col 3 -->
+      <rect class="node-rect" x="448" y="170" width="130" height="50" fill="#fff" stroke="#8c8880" stroke-dasharray="4 3"/>
+      <text class="node-text" x="513" y="191" text-anchor="middle" fill="#8c8880">Nudge SMS</text>
+      <text class="node-sub" x="513" y="206" text-anchor="middle">if abandoned 30min</text>
+
+      <!-- N13: Additional staff reports (branch) — Staff, Col 6 -->
+      <rect class="node-rect" x="958" y="40" width="130" height="50" fill="#fff" stroke="#8c8880" stroke-dasharray="4 3"/>
+      <text class="node-text" x="1023" y="61" text-anchor="middle" fill="#8c8880">Add'l staff reports</text>
+      <text class="node-sub" x="1023" y="76" text-anchor="middle">via their own links</text>
+
+      <!-- N14: Footage reminders (branch) — System, Col 5-6 -->
+      <rect class="node-rect" x="870" y="100" width="120" height="42" fill="#fff" stroke="#dc4c3e" stroke-dasharray="4 3"/>
+      <text class="node-text" x="930" y="118" text-anchor="middle" fill="#dc4c3e" style="font-size:9.5px;">Footage reminders</text>
+      <text class="node-sub" x="930" y="131" text-anchor="middle">7d / 14d / 25d</text>
+
+      <!-- ═══════════ ARROWS — MAIN PATH ═══════════ -->
+
+      <!-- N1 → N2 (horizontal, Staff lane) -->
+      <path class="arrow-path" d="M 238,65 L 268,65" marker-end="url(#arrow)"/>
+
+      <!-- N2 → N3 (down, same column) -->
+      <path class="arrow-path" d="M 335,90 L 335,168" marker-end="url(#arrow)"/>
+      <text class="channel-label" x="342" y="132">SMS</text>
+
+      <!-- N3 → N4 (up-right diagonal) -->
+      <path class="arrow-path" d="M 400,195 C 430,195 448,130 448,67" marker-end="url(#arrow)"/>
+      <text class="channel-label" x="414" y="138">SMS</text>
+
+      <!-- N4 → N5 (horizontal, Staff lane) -->
+      <path class="arrow-path" d="M 578,65 L 616,65" marker-end="url(#arrow)"/>
+      <text class="channel-label" x="582" y="57">Mobile Web</text>
+
+      <!-- N5 → N6 (vertical down) -->
+      <path class="arrow-path" d="M 683,90 L 683,168" marker-end="url(#arrow)"/>
+      <text class="channel-label" x="690" y="132">auto</text>
+
+      <!-- N6 → N7 (horizontal, System lane) -->
+      <path class="arrow-path" d="M 748,195 L 786,195" marker-end="url(#arrow)"/>
+
+      <!-- N7 → N8 (vertical down) -->
+      <path class="arrow-path" d="M 853,220 L 853,298" marker-end="url(#arrow)"/>
+      <text class="channel-label" x="860" y="262">SMS + Email</text>
+
+      <!-- N8 → N9 (horizontal, Admin lane) -->
+      <path class="arrow-path" d="M 918,325 L 956,325" marker-end="url(#arrow)"/>
+
+      <!-- N9 → N10 (diagonal up-right) -->
+      <path class="arrow-path" d="M 1088,300 C 1108,300 1128,260 1148,220" marker-end="url(#arrow)"/>
+
+      <!-- N10 → N11 (vertical down, long) -->
+      <path class="arrow-path" d="M 1198,220 L 1198,428" marker-end="url(#arrow)"/>
+
+      <!-- ═══════════ ARROWS — BRANCHES (DASHED) ═══════════ -->
+
+      <!-- N4 bottom → N12 top (if abandoned) -->
+      <path class="arrow-path dashed" d="M 513,90 L 513,168" marker-end="url(#arrow-muted)"/>
+      <text class="branch-label" x="520" y="135">if abandoned</text>
+
+      <!-- N12 → back up to N4 (curved loop) -->
+      <path class="arrow-path dashed" d="M 460,170 C 435,170 435,90 448,67" marker-end="url(#arrow-muted)"/>
+      <text class="branch-label" x="420" y="145">resume</text>
+
+      <!-- N9 → N13 (up, send links to more staff) -->
+      <path class="arrow-path dashed" d="M 1023,300 L 1023,92" marker-end="url(#arrow-muted)"/>
+      <text class="branch-label" x="1030" y="160">send links</text>
+
+      <!-- N13 → N6 (left, feeds back into investigative file) -->
+      <path class="arrow-path dashed" d="M 958,65 C 860,65 760,100 748,170" marker-end="url(#arrow-muted)"/>
+      <text class="branch-label" x="830" y="88">feeds back into file</text>
+
+      <!-- N7 area → N14 Footage reminders (branch up) -->
+      <path class="arrow-path dashed" d="M 870,170 L 870,142" marker-end="url(#arrow-muted)"/>
+      <text class="branch-label" x="835" y="165" style="font-size:7px;">timed</text>
+
+      <!-- ═══════════ TIMELINE BAR ═══════════ -->
+      <rect x="90" y="520" width="1210" height="40" fill="#f8f7f5" rx="0"/>
+      <line x1="90" y1="520" x2="1300" y2="520" stroke="#d8d2c8" stroke-width="1"/>
+      <text x="173" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">T+0</text>
+      <text x="335" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">T+1 min</text>
+      <text x="513" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">T+2 min</text>
+      <text x="683" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">T+10 min</text>
+      <text x="853" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">Instant</text>
+      <text x="1023" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">T+30 min — hrs</text>
+      <text x="1198" y="544" text-anchor="middle" style="font-family:'Geist Mono',monospace; font-size:8px; fill:#8c8880; letter-spacing:0.05em;">Ongoing</text>
+
+      <!-- Subtle column guides -->
+      <line x1="173" y1="520" x2="173" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="335" y1="520" x2="335" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="513" y1="520" x2="513" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="683" y1="520" x2="683" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="853" y1="520" x2="853" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="1023" y1="520" x2="1023" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+      <line x1="1198" y1="520" x2="1198" y2="525" stroke="#d8d2c8" stroke-width="1"/>
+
+      <!-- Border -->
+      <rect x="0" y="0" width="1300" height="560" fill="none" stroke="#e5e2dc" stroke-width="1" rx="12"/>
+    </svg>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SECTION 1: HAPPY PATH SEQUENCE -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="flow-section">
+    <div class="flow-section-title">1. Happy Path — Incident Reported via SMS</div>
+    <div class="flow-section-desc">Staff witnesses or is informed of an incident, texts Thirdspace, and completes a guided report via magic link.</div>
+
+    <div class="sequence">
+      <!-- Header -->
+      <div class="seq-row" style="background: #f8f7f5; border-bottom: 2px solid var(--border);">
+        <div class="seq-step" style="font-size: 9px; letter-spacing: 0.08em;">STEP</div>
+        <div class="seq-actor" style="padding: 10px 12px;"><span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;">ACTOR</span></div>
+        <div class="seq-content" style="padding: 10px 16px;"><span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;">ACTION</span></div>
+        <div class="seq-channel"><span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;">CHANNEL</span></div>
+        <div class="seq-timing"><span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;">TIMING</span></div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">1</div>
+        <div class="seq-actor"><span class="actor-tag staff">STAFF</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Incident occurs at venue</div>
+          <div class="seq-desc">Staff member witnesses or is informed of an incident (slip & fall, altercation, etc.) on or near the premises.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">In-person</span></div>
+        <div class="seq-timing">T+0</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">2</div>
+        <div class="seq-actor"><span class="actor-tag staff">STAFF</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Text the Thirdspace number</div>
+          <div class="seq-desc">Staff sends any text (e.g., "incident", "help", or just "hi") to the dedicated Thirdspace SMS number. No special format required. Number is posted behind the bar / on staff cards.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">SMS</span></div>
+        <div class="seq-timing">T+1 min</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">3</div>
+        <div class="seq-actor"><span class="actor-tag system">SYSTEM</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Auto-reply with magic link</div>
+          <div class="seq-desc">System instantly responds with a unique, tokenized URL. No login required. Link expires in 72 hours. Message includes the venue name for context.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">SMS</span></div>
+        <div class="seq-timing">Instant</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">4</div>
+        <div class="seq-actor"><span class="actor-tag staff">STAFF</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Open magic link &rarr; Start wizard</div>
+          <div class="seq-desc">Tapping the link opens a mobile-optimized wizard. Step 1 asks for incident type (Slip & Fall, Assault, Liquor Liability, Sexual Harassment, Property Damage).</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">Mobile Web</span></div>
+        <div class="seq-timing">T+2 min</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">5</div>
+        <div class="seq-actor"><span class="actor-tag staff">STAFF</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Complete guided report</div>
+          <div class="seq-desc">Wizard walks through: basic details (when, where, who) &rarr; evidence capture (photos, video) &rarr; witness info &rarr; staff statement. Each step explains WHY this data matters for defensibility.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">Mobile Web</span></div>
+        <div class="seq-timing">5 – 10 min</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">6</div>
+        <div class="seq-actor"><span class="actor-tag system">SYSTEM</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Create investigative file</div>
+          <div class="seq-desc">Report is saved. System generates an investigative file with all attached evidence, statements, and metadata. Completeness score is calculated based on incident type requirements.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">Backend</span></div>
+        <div class="seq-timing">Instant</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">7</div>
+        <div class="seq-actor"><span class="actor-tag system">SYSTEM</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Notify GM / Admin via SMS</div>
+          <div class="seq-desc">GM receives an SMS with incident summary and a link to the admin dashboard. Includes incident type, location, time, and completeness score. If multiple staff are relevant, each gets their own magic link.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">SMS + Email</span></div>
+        <div class="seq-timing">Instant</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">8</div>
+        <div class="seq-actor"><span class="actor-tag admin">ADMIN</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Review report in dashboard</div>
+          <div class="seq-desc">Admin opens the investigative file. Sees what's been collected, what's missing, and can send additional magic links to other staff or witnesses who need to contribute.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">Web App</span></div>
+        <div class="seq-timing">T+30 min</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">9</div>
+        <div class="seq-actor"><span class="actor-tag admin">ADMIN</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Send magic links to additional staff</div>
+          <div class="seq-desc">From the investigative file, admin can generate and send magic links to other staff members who were present. Each person gets their own link to submit their individual report.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">SMS</span></div>
+        <div class="seq-timing">T+1 hr</div>
+      </div>
+
+      <div class="seq-row">
+        <div class="seq-step">10</div>
+        <div class="seq-actor"><span class="actor-tag system">SYSTEM</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Compile case file for TPA</div>
+          <div class="seq-desc">Once completeness threshold is met, system packages the investigative file into a structured case file ready for TPA review. Includes all incident reports, evidence, witness info, and a defensibility summary.</div>
+        </div>
+        <div class="seq-channel"><span class="channel-badge">Backend</span></div>
+        <div class="seq-timing">Ongoing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SECTION 2: SMS CONVERSATION MOCKUP -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="flow-divider">
+    <div class="flow-divider-line"></div>
+    <div class="flow-divider-label">SMS Conversation</div>
+    <div class="flow-divider-line"></div>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-section-title">2. SMS Conversation — What the staff member sees</div>
+    <div class="flow-section-desc">The entire SMS interaction. Staff texts the number, gets a magic link back immediately.</div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+      <!-- SMS mockup -->
+      <div class="sms-mockup">
+        <div class="sms-header">Thirdspace &middot; +1 (555) 3RD-SPCE</div>
+        <div class="sms-time">Today 1:47 AM</div>
+        <div class="sms-bubble outgoing">Incident at the venue</div>
+        <div class="sms-bubble incoming">
+          Hey! Thanks for reporting. Here's your secure link to file the incident report for <strong>The Velvet Room</strong>:<br><br>
+          <span class="link">report.thirdspace.com/r/a8x2k</span><br><br>
+          No login needed. Takes about 5 min.
+        </div>
+        <div class="sms-time">Today 2:15 AM</div>
+        <div class="sms-bubble incoming">
+          Quick reminder: You started a report but haven't submitted it yet. Tap to continue:<br><br>
+          <span class="link">report.thirdspace.com/r/a8x2k</span>
+        </div>
+        <div class="sms-time">3 days later</div>
+        <div class="sms-bubble incoming">
+          Heads up — camera footage at The Velvet Room typically overwrites in 30 days. Make sure to download and upload footage for your Feb 27 incident. <span class="link">Upload here</span>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="trigger-card">
+          <div class="trigger-card-header">
+            <div class="trigger-card-icon sms">&#9993;</div>
+            <div class="trigger-card-title">Initial text from staff</div>
+          </div>
+          <div class="trigger-card-body">Any text to the Thirdspace number triggers the flow. No keyword required — the system recognizes any inbound message as an intent to report. Staff doesn't need to remember a specific format.</div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="trigger-card-header">
+            <div class="trigger-card-icon system">&#8635;</div>
+            <div class="trigger-card-title">Instant magic link reply</div>
+          </div>
+          <div class="trigger-card-body">System auto-replies within seconds. The magic link is tokenized (unique per session), expires in 72h, and is tied to the venue. No login, no app download, no friction.</div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="trigger-card-header">
+            <div class="trigger-card-icon push">&#9200;</div>
+            <div class="trigger-card-title">Abandoned report nudge</div>
+          </div>
+          <div class="trigger-card-body">If the wizard is started but not completed within 30 minutes, system sends a gentle reminder via SMS with the same link. Only sent once to avoid annoyance.</div>
+          <div class="trigger-card-timing">T + 30 min</div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="trigger-card-header">
+            <div class="trigger-card-icon sms">&#128247;</div>
+            <div class="trigger-card-title">Camera footage reminder</div>
+          </div>
+          <div class="trigger-card-body">System proactively reminds staff/admin that camera footage may be overwritten. Sent at configurable intervals (e.g., 7 days, 14 days, 25 days after incident). Links directly to the evidence upload section.</div>
+          <div class="trigger-card-timing">T + 7d, 14d, 25d</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SECTION 3: AUTOMATED TRIGGERS & REMINDERS -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="flow-divider">
+    <div class="flow-divider-line"></div>
+    <div class="flow-divider-label">Automated Triggers</div>
+    <div class="flow-divider-line"></div>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-section-title">3. Automated Notifications & Reminders</div>
+    <div class="flow-section-desc">Every notification the system sends, to whom, when, and through which channel.</div>
+
+    <div class="triggers-grid">
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon sms">&#9993;</div>
+          <div class="trigger-card-title">Magic link to reporting staff</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> Staff who texted in<br>
+          <strong>When:</strong> Immediately on receiving inbound SMS<br>
+          <strong>Contains:</strong> Unique report URL, venue name, estimated time
+        </div>
+        <div class="trigger-card-timing">Instant</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon sms">&#128232;</div>
+          <div class="trigger-card-title">New incident alert to GM</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / designated admin<br>
+          <strong>When:</strong> When first report is submitted for a new incident<br>
+          <strong>Contains:</strong> Incident type, location, time, initial completeness score, link to dashboard
+        </div>
+        <div class="trigger-card-timing">On report submit</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon email">&#128231;</div>
+          <div class="trigger-card-title">Incident summary email to GM</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / admin email on file<br>
+          <strong>When:</strong> Same time as SMS alert<br>
+          <strong>Contains:</strong> Richer detail — full incident summary, what's been collected, what's still needed, action items
+        </div>
+        <div class="trigger-card-timing">On report submit</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon push">&#9200;</div>
+          <div class="trigger-card-title">Incomplete report nudge</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> Staff who started but didn't finish<br>
+          <strong>When:</strong> 30 min after wizard was opened without submission<br>
+          <strong>Contains:</strong> Same magic link, progress status ("You're 60% done")
+        </div>
+        <div class="trigger-card-timing">T + 30 min</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon sms">&#128247;</div>
+          <div class="trigger-card-title">Camera footage deadline warning</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / admin + original reporting staff<br>
+          <strong>When:</strong> 7, 14, and 25 days after incident<br>
+          <strong>Contains:</strong> Warning about footage overwrite, direct upload link, camera angle suggestions based on incident location
+        </div>
+        <div class="trigger-card-timing">T + 7d / 14d / 25d</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon system">&#10004;</div>
+          <div class="trigger-card-title">Outstanding witness statements</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / admin<br>
+          <strong>When:</strong> 24 hours after incident, if witness statements still missing<br>
+          <strong>Contains:</strong> List of witnesses logged but not yet submitted, magic links to forward
+        </div>
+        <div class="trigger-card-timing">T + 24h</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon system">&#9733;</div>
+          <div class="trigger-card-title">Completeness milestone</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / admin<br>
+          <strong>When:</strong> When report reaches 80% and 100% completeness<br>
+          <strong>Contains:</strong> Congratulations, what remaining items (if any), defensibility score improvement
+        </div>
+        <div class="trigger-card-timing">On threshold</div>
+      </div>
+
+      <div class="trigger-card">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon email">&#128203;</div>
+          <div class="trigger-card-title">Weekly incident digest</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>To:</strong> GM / admin<br>
+          <strong>When:</strong> Every Monday at 9 AM<br>
+          <strong>Contains:</strong> Summary of open incidents, completeness scores, overdue items, trends
+        </div>
+        <div class="trigger-card-timing">Weekly</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SECTION 4: ALTERNATIVE ENTRY POINTS -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="flow-divider">
+    <div class="flow-divider-line"></div>
+    <div class="flow-divider-label">Entry Points</div>
+    <div class="flow-divider-line"></div>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-section-title">4. All Entry Points Into the Reporting Flow</div>
+    <div class="flow-section-desc">Multiple ways to start a report — SMS is primary, but QR and admin-initiated magic links are also supported.</div>
+
+    <div class="triggers-grid">
+      <div class="trigger-card" style="border-left: 3px solid var(--accent-orange);">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon sms">&#128241;</div>
+          <div class="trigger-card-title">SMS to Thirdspace number</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>Primary entry point.</strong> Staff texts any message to the dedicated number. System replies with magic link. Works without wifi, without an app, at 2 AM in a loud bar. Number displayed on staff cards, behind the bar, and in break rooms.
+        </div>
+      </div>
+
+      <div class="trigger-card" style="border-left: 3px solid var(--accent-blue);">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon system">&#9638;</div>
+          <div class="trigger-card-title">QR code scan</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>Secondary entry point.</strong> QR code posted behind the bar or on the wall opens the report wizard directly in the browser. Same wizard, same flow — just a different entry point. Useful for venues with good wifi. QR codes are venue-specific (pre-linked to venue ID).
+        </div>
+      </div>
+
+      <div class="trigger-card" style="border-left: 3px solid var(--accent-purple);">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon email">&#128279;</div>
+          <div class="trigger-card-title">Admin-sent magic link</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>Follow-up entry point.</strong> GM creates an incident in the dashboard and sends magic links to specific staff. Used when the GM learns about an incident after the fact and needs individual reports from staff who were present. Also used for witness statements.
+        </div>
+      </div>
+
+      <div class="trigger-card" style="border-left: 3px solid var(--accent-green);">
+        <div class="trigger-card-header">
+          <div class="trigger-card-icon system">&#128196;</div>
+          <div class="trigger-card-title">OCR from paper report</div>
+        </div>
+        <div class="trigger-card-body">
+          <strong>Bridge for existing workflows.</strong> Staff or admin takes a photo of a paper incident board/report. System OCRs it and pre-fills the wizard fields. Staff reviews, corrects, and submits. Helps venues transition from paper to digital without changing habits overnight.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SECTION 5: DATA FLOW -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="flow-divider">
+    <div class="flow-divider-line"></div>
+    <div class="flow-divider-label">Data Architecture</div>
+    <div class="flow-divider-line"></div>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-section-title">5. How Data Flows Through the System</div>
+    <div class="flow-section-desc">From individual staff reports to a complete case file ready for TPA review.</div>
+
+    <div class="sequence">
+      <div class="seq-row" style="background: var(--lane-staff);">
+        <div class="seq-step" style="background: #fef0e0;">1</div>
+        <div class="seq-content" style="padding: 16px;">
+          <div class="seq-title">Individual Incident Reports</div>
+          <div class="seq-desc">Each staff member submits their own account. Multiple reports can be attached to the same incident. Each report = one person's perspective.</div>
+        </div>
+      </div>
+      <div class="seq-row" style="background: var(--lane-system);">
+        <div class="seq-step" style="background: #dbeafe;">2</div>
+        <div class="seq-content" style="padding: 16px;">
+          <div class="seq-title">Investigative File</div>
+          <div class="seq-desc">System aggregates all reports + evidence + witness info into a single investigative file. Completeness is tracked against the minimum information set for that incident type (e.g., Slip & Fall needs: patron info, staff statements, witness statements, video, maintenance records, photos).</div>
+        </div>
+      </div>
+      <div class="seq-row" style="background: var(--lane-admin);">
+        <div class="seq-step" style="background: #ede9fe;">3</div>
+        <div class="seq-content" style="padding: 16px;">
+          <div class="seq-title">Admin Review & Enrichment</div>
+          <div class="seq-desc">GM reviews the file, adds context, sends additional magic links for missing statements, uploads supplementary evidence (POS data, cleaning logs, security agreements). Completeness score updates in real-time.</div>
+        </div>
+      </div>
+      <div class="seq-row" style="background: var(--lane-tpa);">
+        <div class="seq-step" style="background: #dcfce7;">4</div>
+        <div class="seq-content" style="padding: 16px;">
+          <div class="seq-title">Case File &rarr; TPA Handoff</div>
+          <div class="seq-desc">Complete investigative file is packaged as a structured case file. Includes all reports, evidence, defensibility assessment, and timeline. TPA can review and action on it — this is what prevents cases from going to trial.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESIGN NOTES -->
+  <div class="design-notes">
+    <div class="design-notes-title">Open design questions</div>
+    <ul>
+      <li>Should the Thirdspace SMS number be per-venue or shared across all venues? Per-venue simplifies context detection but adds operational complexity.</li>
+      <li>How do we handle multiple incidents on the same night? After the magic link is used, does texting again create a new incident or link to the existing one?</li>
+      <li>Should the QR code open the full wizard or a simplified "quick capture" (just photos + type) with a follow-up link for details?</li>
+      <li>Camera footage reminder cadence (7/14/25 days) — should this be configurable per venue based on their DVR retention settings?</li>
+      <li>Do we need a "nothing happened" shift report that confirms no incidents? Helps with the defensibility narrative (absence of reports = good operations, not missing data).</li>
+      <li>OCR feature scope for v1: full form pre-fill or just text extraction that the user then manually places into fields?</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <div class="footer-note">Third Space &middot; Service Design &middot; Incident Reporting Flow</div>
+    <div class="footer-note">v1 Draft — Feb 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
